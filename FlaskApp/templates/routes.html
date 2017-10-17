@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block jumbotron %}
+{% endblock %}
+
+{% block cols %}
+{% endblock %}
+
+    {% block content %}    
+</br>
+</br>
+    <div class="container">
+    <h1>Application Routes</h1>
+        <table>
+            {% for route in routes|sort %}
+                <tr>
+                    <td>{{ route }}</td>
+            {% endfor %}
+            </table>
+    </div>
+    {% endblock %}

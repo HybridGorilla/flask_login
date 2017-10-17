@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block cols %}
+{% endblock %}
+
+{% block jumbotron %}
+{% endblock %}
+
+{% block content %}
+</br>
+</br>
+<div class="container">
+	<form action="register" method=post class="form-horizontal">
+        <h2>Sign up!</h2>
+        <div class="control-group">
+            <div class="controls">
+                <input type="text" id="username" name="username" class="input-xlarge" placeholder="Enter Username" value="{{ request.form.username }}" required>
+            </div>
+        </div>
+
+        <fieldset>
+        <input type="password" placeholder="Password" id="password"name="password" required>
+        <input type="password" placeholder="Confirm Password" id="confirm_password" required>
+        </fieldset>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-success">Signup</button>
+            </div>
+        </div>
+        </form>
+</div>
+{% endblock %}

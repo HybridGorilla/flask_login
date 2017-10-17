@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+	<meta charset="utf-8">
+	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js')}}"</script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    {% endblock %}
+</head>
+<title>
+    {% block title %}
+        HIGS
+    {% endblock %}
+</title>
+<body>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div id="footer">
+        {% block footer %}
+            <br>
+            &copy; Copyright 2017, James Hancox
+        {% endblock %}
+    </div>
+</body>
+</html>
+
