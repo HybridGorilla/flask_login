@@ -25,7 +25,7 @@ class Users(db.Model):
     pj_salt = db.Column(db.String(50))
 #    u_role = db.Column(db.String(20))
 
-    def __init__(self, ID, u_name, p_word, pj_salt, urole):
+    def __init__(self, ID, u_name, p_word, pj_salt):
         self.ID = ID
         self.u_name = u_name
         self.p_word = p_word

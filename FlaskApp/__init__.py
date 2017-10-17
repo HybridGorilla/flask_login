@@ -160,15 +160,20 @@ def register():
     salt = gen_salt(username).hexdigest()
 
     hashword = hash_pass(salt,password)
-    db_input = Users(0,username,hashword,salt,u_role)
-
+    db_input = Users(0,username,hashword,salt)
+    # u_role
     db.session.add(db_input)
     db.session.commit()
-    return redirect(url_for('test_login'))
+    return redirect(url_for('success'))
 
 
-@flask_login.login_required
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+
 @app.route("/usermanage", methods=['GET','POST'])
+@flask_login.login_required
 def user_manage():
     if request.method == 'GET':
         return render_template('user_manager.html')
@@ -179,8 +184,8 @@ def user_manage():
     return "You used a POST request!"
 
 
-@flask_login.login_required
 @app.route("/admin_search", methods=['GET','POST'])
+@flask_login.login_required
 def admin_search():
     if request.method == 'GET':
         return render_template('admin_search.html')
@@ -194,6 +199,7 @@ def admin_search():
         return "No data found"
 
     return things
+
 
 if __name__ == '__main__':
     app.run()
