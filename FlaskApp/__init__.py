@@ -7,6 +7,8 @@ from flask import url_for
 from flask import redirect
 from flask import render_template
 from flask import jsonify
+import flask_bouncer as bouncer
+from bouncer import authorization_method
 import flask_login
 
 app = Flask(__name__)
@@ -26,9 +28,20 @@ db.init_app(app)
 t = time.time()
 
 
+@authorization_method
+def authorize(user, they):
+    if user.is_admin:
+        they.can(MANAGE, ALL)
+    else:
+        they.can(READ, ALL)
+
+
 @login_manager.user_loader
 def user_loader(userName):
-    return users_table.query.get(userName)
+    if users_table.query.get(userName) is not None:
+        return users_table.query.get(userName)
+    else:
+        return None
 
 
 @login_manager.request_loader
@@ -36,7 +49,7 @@ def request_loader(request):
     token = request.headers.get('username')
     passWord = request.headers.get('password')
     if token is None:
-        return "No user found"
+        return None
 
     if token is not None:
         user_entry = users_table.get(u_name)
@@ -50,7 +63,7 @@ def request_loader(request):
 
 @login_manager.unauthorized_handler
 def unauthorized_hander():
-    return 'Unauthorised Acccess!'
+    return render_template("unauthorised.html")
 
 
 def makeDict(my_dict):

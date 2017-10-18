@@ -8,6 +8,7 @@ It is meant only as a resource.
 ## Dependencies 
 flask
 flask_login
+flask_bouncer
 mysql-server
 mysql-client
 libmysqlclient-dev
