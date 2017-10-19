@@ -7,12 +7,16 @@ from flask import url_for
 from flask import redirect
 from flask import render_template
 from flask import jsonify
+from flask import abort
 import flask_bouncer as bouncer
 from bouncer import authorization_method
+from flask_bouncer import requires
+from flask_bouncer import Bouncer
 import flask_login
 
 app = Flask(__name__)
 app.config.from_pyfile('instance/config.py')
+app.config['SECRET_KEY'] = "b253d70da319d666a220aecec77f6d87cda2e655837c571c229ed59fc1a0a7eb"
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -23,17 +27,21 @@ import FlaskApp.database
 import FlaskApp.models
 from FlaskApp.models import db
 from FlaskApp.models import Users
+
+
 users_table = Users
 db.init_app(app)
+#bouncer = Bouncer(app)
 t = time.time()
 
 
 @authorization_method
 def authorize(user, they):
+    print "Bombed out here..."
     if user.is_admin:
-        they.can(MANAGE, ALL)
-    else:
         they.can(READ, ALL)
+    else:
+        they.can(READ, 'Normal')
 
 
 @login_manager.user_loader
@@ -149,6 +157,11 @@ def server_error(error):
     return render_template("server_error.html")
 
 
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template("forbidden.html")
+
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template("not_found.html")
@@ -168,16 +181,24 @@ def register():
     if request.method == 'GET':
         return render_template('register.html')
 
+    role = ""
     username = request.form['username']
     password = request.form['password']
     salt = gen_salt(username).hexdigest()
 
-    hashword = hash_pass(salt,password)
-    db_input = Users(0,username,hashword,salt)
-    # u_role
-    db.session.add(db_input)
-    db.session.commit()
-    return redirect(url_for('success'))
+    if username == "admin":
+        role = "admin"
+    else:
+        role = "user"
+    try:
+        hashword = hash_pass(salt,password)
+        db_input = Users(0,username,hashword,salt,role)
+        # u_role
+        db.session.add(db_input)
+        db.session.commit()
+        return redirect(url_for('success'))
+    except Exception as ex:
+        abort(403)
 
 
 @app.route("/success")
@@ -215,10 +236,11 @@ def admin_search():
 
 
 @app.route("/testroles")
+@requires('READ', 'TopSecret')
 def roletest():
     k = flask_login.current_user.u_name
-    print flask_login.current_user.is_authenticated()
-    print ("Current Flask User: %s" % k)
+    #print flask_login.current_user.is_authenticated()
+    #print ("Current Flask User: %s" % k)
     x = users_table.query.filter_by(u_name=k).first()
 
     if k is None:

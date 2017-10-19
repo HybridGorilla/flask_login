@@ -25,12 +25,12 @@ class Users(db.Model):
     pj_salt = db.Column(db.String(50))
     role = db.Column(db.String(20))
 
-    def __init__(self, ID, u_name, p_word, pj_salt):
+    def __init__(self, ID, u_name, p_word, pj_salt, role):
         self.ID = ID
         self.u_name = u_name
         self.p_word = p_word
         self.pj_salt = pj_salt
-        self.u_role = u_role
+        self.role = role
 
 
     def is_authenticated(self):
