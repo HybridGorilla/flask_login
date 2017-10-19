@@ -216,13 +216,18 @@ def admin_search():
 
 @app.route("/testroles")
 def roletest():
-    x = users_table.query.filter_by(u_name=userName).first()
-    print ("Username: " + x.u_name)
-    print ("Password: " + x.role)
-    if x.role == "admin":
-        return x.role + " Granted"
+    k = flask_login.current_user.u_name
+    print flask_login.current_user.is_authenticated()
+    print ("Current Flask User: %s" % k)
+    x = users_table.query.filter_by(u_name=k).first()
+
+    if k is None:
+        flask_login.current_user = "anon"
+
+    if x != "admin":
+        return x.u_name + " " + x.role + " Rejected"
     else:
-        return x.role + " Rejected"
+        return x.u_name + " " + x.role + " Granted!"
 
 
 if __name__ == '__main__':
