@@ -214,6 +214,17 @@ def admin_search():
     return things
 
 
+@app.route("/testroles")
+def roletest():
+    x = users_table.query.filter_by(u_name=userName).first()
+    print ("Username: " + x.u_name)
+    print ("Password: " + x.role)
+    if x.role == "admin":
+        return x.role + " Granted"
+    else:
+        return x.role + " Rejected"
+
+
 if __name__ == '__main__':
     app.run()
 
