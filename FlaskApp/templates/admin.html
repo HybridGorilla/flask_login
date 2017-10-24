@@ -17,7 +17,84 @@
 <p>Please see below for the functions provided by this endpoint</p>
 </div>
 <div class="container">
-    <h2>Modify User</h2>
-    <p>Please enter the name of the user you wish to modify: </p>
+    <h2>Control Panel</h2>
+    </br>
+<form action="/admin" method="post">
+   <div class="form-group">
+     <label for="username">Search below:</label>
+     <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+   </div>
+   <div class="control-group">
+      <div class="controls">
+       <button type="submit" class="btn btn-success">Submit</button>
+      </div>
+   </div>
+</form>
+</br>
+        <table class="table">
+            {% for thing in output|sort %}
+                <tr>
+                  <td>{{ thing }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+<hr>
+<h3>Modify Users</h3>
+<form action="/admin_mod" method="post">
+   <div class="form-group">
+     <label for="username2">Enter Username:</label>
+     <input type="text" class="form-control" name="username2" id="username" placeholder="New Username">
+   </div>
+   <div class="form-group">
+     <label for="password2">Modify User Password:</label>
+     <input type="password" class="form-control" name="password2" id="password" placeholder="New Password">
+   </div>
+   <div class="form-group">
+     <label for="bio">Modify User Bio/Profile:</label>
+     <input type="text" class="form-control" name="bio" id="bio" placeholder="Bio/Profile">
+   </div>
+
+
+   <div class="control-group">
+      <div class="controls">
+       <button type="submit" class="btn btn-success">Submit</button>
+      </div>
+   </div>
+</form>
+</br>
+</br>
+        <table class="table">
+            {% for thing in flashbox|sort %}
+                <tr>
+                  <td>{{ thing }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+<hr>
+<button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#searchModal">List Users</button>
+
+<div class="modal fade" id="searchModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-header">List of users: </h4>
+        </div>
+        <div class="modal-body">
+        <table class="table">
+            {% for things in modalblob|sort %}
+                <tr> 
+                  <td>{{ things }}</td>
+                </tr>
+            {% endfor %} 
+        </table>
+        </div>
+        <div class="modal-footer">
+  <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+        <div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

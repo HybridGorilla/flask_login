@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = "b253d70da319d666a220aecec77f6d87cda2e655837c571c229e
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'testlogin'
+login_manager.login_view = 'login'
 
 
 import FlaskApp.database
@@ -88,16 +88,17 @@ def auth_check():
     permission = users_table.query.filter_by(u_name=user).first()
 
     if permission.role != "admin":
-        abort(401)
+        return False
     else:
         return True
 
-
-#@app.route("/dbtest")
-#@flask_login.login_required
-#def dbtest():
-#    data = makeDict(users_table.query.all())
-#    return jsonify(data)
+@app.route("/get_users")
+@flask_login.login_required
+def dbtest():
+    if auth_check == False:
+        abort(401)
+    data = makeDict(users_table.query.all())
+    return render_template("userlist.html", objects=data)
 
 
 @app.route("/")
@@ -118,14 +119,17 @@ def logout():
     return render_template('logout.html')
 
 
-@app.route("/testlogin", methods=['GET','POST'])
+@app.route("/login", methods=['GET','POST'])
 def test_login():
     from flask import request
     if request.method == 'GET':
         return render_template('login.html')
     else:
+        #print("made it this far!")
         userName = request.form['username']
         passWord = request.form['password']
+        print (userName)
+        print (passWord)
         check = users_table.query.all()
         for x in check:
             salty = hash_pass(x.pj_salt, passWord)
@@ -156,14 +160,55 @@ def routes():
         return render_template('routes.html', routes=output)
 
 
-@app.route("/admin")
+@app.route("/admin_mod", methods=['GET','POST'])
+@flask_login.login_required
+def admin_mod():
+    if auth_check() == False:
+        abort(403)
+    if request.method == 'POST':
+        username = request.form['username2']
+        password = request.form['password2']
+        bio = request.form['bio']
+
+        get_user = users_table.query.filter_by(u_name=username).first()
+        test = ["objects", "go", "in", "lists"]
+        salt = gen_salt(get_user.u_name).hexdigest()
+        password = hash_pass(salt, password)
+        db_push = users_table.query.filter_by(u_name=username).update(dict(p_word=password, pj_salt=salt, bio=bio))
+        db.session.commit()
+        object_list = [ "Update Successful!" ]
+
+        return render_template("admin.html", flashbox=object_list)
+
+    return redirect(url_for('admin'))
+
+
+@app.route("/admin", methods=['GET','POST'])
 @flask_login.login_required
 def admin():
-    user = flask_login.current_user.u_name
-    permission = users_table.query.filter_by(u_name=user).first()
+    if auth_check == False:
+        abort(403)
 
-    if permission.role != "admin":
-        return abort(403)
+    objects = []
+
+    if request.method == "POST":
+        username = request.form['username']
+        search = users_table.query.filter_by(u_name=username).first()
+        x = search.u_name
+        y = search.pj_salt
+        z = search.p_word
+        v = search.bio
+        things = ["objects", "go", "in", "lists"]
+        object_list = [
+                        x,
+                        y,
+                        z,
+                        v
+                      ]
+        # Note: weird behaviour (or I'm tired), the 2nd set of objects isn't loading
+        # until after the 'object_list' is loaded by performing a search, its like a
+        # global AJAX request is made internally when a search is performed (vOv)
+        return render_template("admin.html", output=object_list, modalblob=things)
 
     return render_template("admin.html")
 
@@ -255,11 +300,16 @@ def user_manage():
     return render_template('usermanager.html')
 
 
-@app.route("/profile")
+@app.route("/profile", methods=['GET','POST'])
 @flask_login.login_required
 def profile():
     user = flask_login.current_user.u_name
     prof = users_table.query.filter_by(u_name=user).first()
+    if request.method == 'POST':
+        biog = request.form['bio']
+        new_bio = users_table.query.filter_by(u_name=user).update(dict(bio=biog))
+        db.session.commit()
+        return render_template("profile.html", output=prof.bio)
 
     return render_template("profile.html", output=prof.bio)
 

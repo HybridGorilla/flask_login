@@ -10,9 +10,28 @@
 </br>
 </br>
     <div class="container">
-    <h1>User Profile</h1>
-<h3>Current Profile</h3>
-<p>{{ output }}</p>
+
+     <h1>User Profile</h1>
+      <p>Your current profile:</p>
+       <blockquote>
+        <p>{{ output }}</p>
+        <footer>{{ current_user.u_name }}</footer>
+       </blockquote>
+
+
+<form action="/profile" method="post">
+<div class="form-group">
+  <label for="comment">Submit New Profile:</label>
+  <textarea class="form-control" name="bio" rows="5" id="comment" max=500></textarea>
 </div>
-    {% endblock %}
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+</form>
+</div>
+
+
+{% endblock %}
 
