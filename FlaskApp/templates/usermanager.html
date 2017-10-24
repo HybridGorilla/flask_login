@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Home Slice{% endblock %}
+
+{% block jumbotron %}
+{% endblock %}
+
+{% block cols %}
+{% endblock %}
+
+{% block content %}
+</br>
+</br>
+<div class="container">
+<h1>Protected Content</h1>
+<p class="important">You are now logged in!</p>
+<h2>Change Password</h2>
+<form method='POST' action="/usermanage">
+        <p>Current Password: <input type="password" name="password" required/></p>
+        <p>New Password: <input type="password" name="new_pass" required/></p>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-success">Signup</button>
+            </div>
+        </div>
+
+</form>
+<p>Click <a href='/logout'>here</a> to log out</p>
+</div>
+{% endblock %}
