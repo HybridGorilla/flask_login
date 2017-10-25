@@ -32,7 +32,6 @@ from FlaskApp.models import Users
 
 users_table = Users
 db.init_app(app)
-#bouncer = Bouncer(app)
 t = time.time()
 
 
