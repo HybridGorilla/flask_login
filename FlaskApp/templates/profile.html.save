@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block jumbotron %}
+{% endblock %}
+
+{% block cols %}
+{% endblock %}
+
+    {% block content %}
+</br>
+</br>
+    <div class="container">
+    <h1>User Profile</h1>
+      <h3>Current Profile</h3>
+        <p>{{ output }}</p>
+</div>
+<div class="container">
+   <p>Enter a new biography!</p>
+   <form action="/profile">
+       
+    {% endblock %}
+

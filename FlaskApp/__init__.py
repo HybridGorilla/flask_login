@@ -1,3 +1,4 @@
+import binascii
 import urllib
 import time
 import hashlib
@@ -33,6 +34,11 @@ users_table = Users
 db.init_app(app)
 #bouncer = Bouncer(app)
 t = time.time()
+
+
+def gen_token():
+    randCode = binascii.hexlify(os.urandom(24))
+    return randCode
 
 
 @authorization_method
@@ -92,10 +98,11 @@ def auth_check():
     else:
         return True
 
+
 @app.route("/get_users")
 @flask_login.login_required
 def dbtest():
-    if auth_check == False:
+    if auth_check() == False:
         abort(401)
     data = makeDict(users_table.query.all())
     return render_template("userlist.html", objects=data)
@@ -120,12 +127,11 @@ def logout():
 
 
 @app.route("/login", methods=['GET','POST'])
-def test_login():
+def login():
     from flask import request
     if request.method == 'GET':
         return render_template('login.html')
     else:
-        #print("made it this far!")
         userName = request.form['username']
         passWord = request.form['password']
         print (userName)
